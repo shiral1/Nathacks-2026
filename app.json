@@ -25,6 +25,13 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "CookLab uses the camera to scan your receipts.",
+          "photosPermission": "CookLab accesses your photos to import receipts."
+        }
+      ],
       "expo-router",
       [
         "expo-splash-screen",
