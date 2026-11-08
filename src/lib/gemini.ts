@@ -1,7 +1,7 @@
 const API_KEY = process.env.EXPO_PUBLIC_GEMINI_API_KEY;
 
 // Check AI Studio for the current Flash model name if this one errors
-const MODEL = 'gemini-3.6-flash';
+const MODEL = 'gemini-3.5-flash';
 
 export type ReceiptItem = {
   name: string;
@@ -17,7 +17,9 @@ For each item:
 - quantity: number of units bought (default 1). If sold by weight, use the weight.
 - unit: "item", "kg", "g", "lb", "L", "mL", etc.
 - category: one of produce, meat, seafood, dairy, bakery, pantry, frozen, beverages, other.
-If the image is not a receipt, return an empty list.`;
+If the image is not a receipt, return an empty list.
+
+If text is unclear, give your best guess and skip items you can’t read rather than inventing them.`;
 
 const SCHEMA = {
   type: 'OBJECT',
@@ -68,6 +70,8 @@ export async function parseReceipt(base64: string, mimeType = 'image/jpeg'): Pro
   const data = await res.json();
   if (!res.ok) throw new Error(data?.error?.message ?? 'Gemini request failed');
 
+  console.log('Gemini usage:', data.usageMetadata);
+  
   const text = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? '{"items":[]}';
   return JSON.parse(text).items ?? [];
 }
